@@ -1,0 +1,973 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans" rel="stylesheet">
+    <script src="https://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+    <title>Document</title>
+
+</head>
+ 
+<body>
+    <style>
+        .y-axis path,
+        .y-axis line {
+                fill: none;
+                stroke: black;
+                shape-rendering: crispEdges;
+            }
+
+        .x-axis path, .x-axis line{
+            	display:none;
+
+            }
+            
+        .x-axis, .y-axis text {
+                font-family: sans-serif;
+                font-size: 10px;
+            }
+            
+        div.tooltip {   
+                position: absolute;
+                max-width: 200px;
+                height: auto;
+                padding: 5px;
+                background-color: white;
+                border-radius: 5px;
+                font-family: sans-serif;
+                font-size:12px;
+        }
+        div.tooltip2 {   
+                position: absolute;
+                max-width: 200px;
+                height: auto;
+                padding: 5px;
+                background-color: white;
+                border-radius: 5px;
+                font-family: sans-serif;
+                font-size:14px;
+        }
+        .node circle {
+          fill: #fff;
+          stroke: steelblue;
+          stroke-width: 6px;
+          
+        }
+    
+        .node text { font: 15px sans-serif; }
+    
+        .link {
+          fill: none;
+          stroke: #ccc;
+          stroke-width: 2px;
+        }
+
+        body {
+            width: 800px;
+            height: 850px;
+        }
+        #treechart{
+            top:50px;
+            right:-100px;
+        }
+        #dashTitle {
+            display: block;
+            margin: auto;
+            font-family: 'Open Sans', sans-serif;
+        }
+
+        #barChartLegend {
+            overflow: visible;
+
+        }
+        #barChartLegend2{
+            position: absolute;
+            overflow: visible;
+            right:590px;
+            top:580px;
+
+        }
+
+        .profitLabel {
+            font-family: 'Open Sans', sans-serif;	
+            font-size: 12px;
+        }       
+        h1{
+            top: 100px;
+            padding:10px;
+            text-align:center;
+        }
+        p{
+            
+            position: absolute;
+            right: 10px;
+            width: 1000px;
+            padding: 10px;
+            font-size: 20px;
+            color:red;
+            
+        }
+        h2{
+            position: absolute;
+            right:10px;
+            padding: 600px;
+            font-size: 20px;
+        }
+        h3{
+            position: absolute;
+            font-size: 30px;
+            height: 100px;
+            width: 100px;
+            top:600px;
+        }
+        h4{
+            height:30px;
+            font-size: 20px;
+            
+        }
+        h5{
+            font-family: 'Open Sans', sans-serif;
+            position: absolute;
+            text-align:right;
+            font-size: 30px;
+            top:550px;
+            
+        }
+        h6{ 
+            position: absolute;  
+            top:638px;
+            left:1000px;
+            font-size: 20px;
+            
+        }
+        #Open{
+            position: absolute;
+            top:960px;
+            color: blue;
+            font-size: 25px;;
+            right:820px;
+        }
+        #High{
+            position: absolute;
+            top:1140px;
+            color: blue;
+            font-size: 25px;;
+            right:820px;
+        }
+        #Low{
+            position: absolute;
+            top:1340px;
+            color: blue;
+            font-size: 25px;;
+            right:820px;
+        }
+        #Close{
+            position: absolute;
+            top:1540px;
+            color: blue;
+            font-size: 25px;;
+            right:820px;
+        }
+        #Openpie2019{
+            position: absolute;
+            top:1070px;
+            color: blue;
+            font-size: 20px;;
+            right:1510px;
+        }
+        #Highpie2019{
+            position: absolute;
+            top:1270px;
+            color: blue;
+            font-size: 20px;;
+            right:1510px;
+        }
+        #Lowpie2019{
+            position: absolute;
+            top:1460px;
+            color: blue;
+            font-size: 20px;;
+            right:1510px;
+        }
+        #Closepie2019{
+            position: absolute;
+            top:1640px;
+            color: blue;
+            font-size: 20px;;
+            right:1510px;
+        }
+        #Openpie2020{
+            position: absolute;
+            top:1070px;
+            color: blue;
+            font-size: 20px;;
+            right:160px;
+        }
+        #Highpie2020{
+            position: absolute;
+            top:1270px;
+            color: blue;
+            font-size: 20px;;
+            right:160px;
+        }
+        #Lowpie2020{
+            position: absolute;
+            top:1470px;
+            color: blue;
+            font-size: 20px;;
+            right:160px;
+        }
+        #Closepie2020{
+            position: absolute;
+            top:1650px;
+            color: blue;
+            font-size: 20px;;
+            right:160px;
+        }
+
+    </style>
+    <div>
+        <h1 id = "Webtitle"style = "float:left;width:1800px;margin-top:10px">Welcome to TESLA
+            <p>
+                Tesla is an American electric vehicle and clean energy company based in Palo Alto, California, United States. Tesla designs and manufactures electric cars, battery energy storage from home to grid-scale, solar panels and solar roof tiles, and related products and services. In 2020, Tesla had the most sales of battery electric vehicles and plug-in electric vehicles, capturing 16% of the plug-in market (which includes plug-in hybrids) and 23% of the battery-electric (purely electric) market. Through its subsidiary Tesla Energy, the company develops and is a major installer of photovoltaic systems in the United States. Tesla Energy is also one of the largest global suppliers of battery energy storage systems, with 3 gigawatt-hours (GWh) installed in 2020.
+        
+                Founded in July 2003 by Martin Eberhard and Marc Tarpenning as Tesla Motors, the company's name is a tribute to inventor and electrical engineer Nikola Tesla. In February 2004, via a $6.5 million investment, X.com co-founder Elon Musk became the largest shareholder of the company and its chairman. He has served as CEO since 2008. According to Musk, the purpose of Tesla is to help expedite the move to sustainable transport and energy, obtained through electric vehicles and solar power. Tesla began production of its first car model, the Roadster, in 2009. This was followed by the Tesla Model S sedan in 2012, the Tesla Model X SUV in 2015, the Tesla Model 3 sedan in 2017, and the Tesla Model Y crossover in 2020. The Tesla Model 3 is the all-time best-selling plug-in electric car worldwide, with more than 800,000 delivered through December 2020. Tesla's global vehicle sales were 499,550 units in 2020, a 35.8% increase over the previous year. In 2020, the company produced over 1 million electric cars.
+                
+        lawsuits and controversies arising from statements and acts of CEO Elon Musk and from allegations of creative accounting, whistleblower retaliation, worker rights violations, and unresolved and dangerous technical problems with their products.
+            </p>
+        </h1>
+    </div>
+    <img src="https://www.ekoturk.com/wp-content/uploads/2020/07/tesla-4-ceyrekte-pes-pese-kar-etti.jpg" 
+    width="1500"
+    height="470"
+    style="float:right;width:800px;margin-top:5px"
+    alt="TESLA">
+    <h3 id="dashTitle" style="float:right;width:800px">2019 Price Data</h3>
+    <div id = "topChart" style="float:left;width:800px;">
+            <h4 style ="margin-left:10px;margin-top:77px ;float:left;">Price by Month</h4>  
+            <svg id = "barChartLegend"></svg>
+            <svg id="barChart"></svg>
+            <svg id="treeChart"></svg>
+    </div>
+    <div id="bottomLeft" style="float:left; width:350px;margin-left:50px;margin-top:-150px"></div>
+    <h5 id="dashTitle2" style="float:left;width:1200px">2020 Price Data</h5>
+    <div id = "topChart2" style="float:right;margin-top:-372px;margin-right:-1000px;width:800px;">
+            <h6 style ="margin-right:100px;margin-top:10px; float:left;">Price by Month</h6>  
+            <svg id = "barChartLegend2"></svg>
+            <svg id="barChart2"></svg>
+            <svg id="treeChart2"></svg>
+    </div>
+    <div id="bottomLeft2" style="float:right;margin-right:-920px;margin-top:-150px; width:350px;margin-left:50px;"></div>
+    <a id=Open href="./Comparison/Opens.html" target = ".blank">Click to see Open Prices of two years</a>
+    <a id=High href="./Comparison/High.html" target = ".blank">Click to see High Prices of two years</a>
+    <a id=Low href="./Comparison/Low.html" target = ".blank">Click to see Low Prices of two years</a>
+    <a id=Close href="./Comparison/Close.html" target = ".blank">Click to see Close Prices of two years</a>
+    <a id="Openpie2019" href = "./Pie Charts/Openpiechart2019.html" target=".blank">Click to see Pie model</a>
+    <a id="Highpie2019" href = "./Pie Charts/Highpiechart2019.html" target=".blank">Click to see Pie model</a>
+    <a id="Lowpie2019" href = "./Pie Charts/Lowpiechart2019.html" target=".blank">Click to see Pie model</a>
+    <a id="Closepie2019" href = "./Pie Charts/Closepiechart2019.html" target=".blank">Click to see Pie model</a>
+    <a id="Openpie2020" href = "./Pie Charts/Openpiechart2020.html" target=".blank">Click to see Pie model</a>
+    <a id="Highpie2020" href = "./Pie Charts/Highpiechart2020.html" target=".blank">Click to see Pie model</a>
+    <a id="Lowpie2020" href = "./Pie Charts/Lowpiechart2020.html" target=".blank">Click to see Pie model</a>
+    <a id="Closepie2020" href = "./Pie Charts/Closepiechart2020.html" target=".blank">Click to see Pie model</a>
+
+    <script>
+
+
+        // To show last digits of bar chart and legend
+		function formatSales(d){
+    		var prefix = d3.formatPrefix(d);
+    		var num =  prefix.scale(d).toFixed(3);						    			
+    		return num+prefix.symbol;
+			}
+        
+        
+		/* function compareNums(a,b){
+			return a-b;
+			} */
+            
+        var minPrice2 = 8831.840
+        var maxPrice2 = 55739.160
+
+    </script>
+
+
+    <script>
+
+        function buildBar1(ds){
+
+            // To set mouse events style
+            var barTooltip = d3.select("body").append("div")   
+                .attr("class", "tooltip")               
+                .style("opacity", 10);
+            
+            // To set bar chart height and width   
+            var margin = {top: 10, right: 30, bottom: 30, left: 40},
+                width = 800 - margin.left - margin.right,
+                height = 200 - margin.bottom;
+
+            // Scaling
+            var x = d3.scale.ordinal()
+                .rangeRoundBands([0, width], .1);
+
+            
+            var y = d3.scale.linear()
+                .range([height, 0]);
+
+            // To set axis places   
+            var xAxis = d3.svg.axis()
+                .scale(x)
+                .orient("bottom");
+
+            var yAxis = d3.svg.axis()
+                .scale(y)
+                .orient("left")
+                .tickFormat(d3.format("s"))
+                .ticks(6);
+
+            // To set axis values and assign a color in the graph
+            var minPrice = d3.min(ds, function(d){ return d.Price; });
+            var maxPrice = d3.max(ds, function(d){ return d.Price; });
+            var color = d3.scale.quantize()
+                        .domain([minPrice, maxPrice])							
+                        .range(['rgb(202,0,32)','rgb(244,165,130)','rgb(186,186,186)','rgb(64,64,64)']);
+                        
+            
+            // To set chart position
+            var chart = d3.select("#barChart")
+                .attr("width", width + margin.left + margin.right)
+                .attr("height", height + margin.top + margin.bottom)
+                .append("g")
+                .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+            d3.csv("2019All.csv", function(error, data) {
+            x.domain(data.map(function(d) { return d.Date; }));
+            y.domain([0, d3.max(data, function(d) { return d.Price; })]);
+
+            // To assign the values to axis'
+            chart.append("g")
+                .attr("class", "x-axis")
+                .attr("transform", "translate(0," + height + ")")
+                .call(xAxis);
+
+            chart.append("g")
+                .attr("class", "y-axis")
+                .call(yAxis);
+
+            // To assign the mouse events on the bar chart
+            chart.selectAll("#barChart")
+                .data(data)
+                .enter()
+                .append("rect")
+                .attr("class", "bar")
+                .attr("x", function(d) { return x(d.Date); })
+                .attr("y", function(d) { return y(d.Price); })
+                .attr("height", function(d) { return height - y(d.Price); })
+                .attr("width", x.rangeBand())
+                .style("fill", function(d) { return color(d.Price); })
+                .on("mouseover", function(d) {      
+
+                        barTooltip.transition()        
+                            .duration(500)      
+                            .style("opacity", .9);      
+
+                        var tip = "<strong>Price:</strong> $" + formatSales(d.Price) + "<br/>";
+                        barTooltip.html(tip)  
+                            .style("left", (d3.event.pageX) + "px")     
+                            .style("top", (d3.event.pageY - 28) + "px");    
+                    })                  
+                    .on("mouseout", function(d) {       
+
+                        barTooltip.transition()        
+                            .duration(500)      
+                            .style("opacity", 0);   
+                    });
+
+
+            });
+            }        
+
+            function buildLegend(data){
+
+                    // To set legend location
+                    var margin = {top: 20, right: 30, bottom: 30, left: 40},
+                        width = 800 - margin.left - margin.right,
+                        height = 290 - margin.top - margin.bottom;
+
+                    // To set values and assign a color 
+                    var minPrice = d3.min(data, function(d){ return d.Price; });
+                    var maxPrice = d3.max(data, function(d){ return d.Price; });
+
+                    var color = d3.scale.quantize()
+                                .domain([minPrice, maxPrice])							
+                                .range(['rgb(202,0,32)','rgb(244,165,130)','rgb(186,186,186)','rgb(64,64,64)']);
+
+                    //sort values for color legend
+
+                    var barLegendData=[];
+
+                    data.forEach(function(dv){
+
+                        var val = parseFloat(dv.Price)
+
+                        if (val) {barLegendData.push(val);}
+
+                    });
+
+                    barLegendData.sort(function(a,b){ return a-b;});
+
+                    console.log(barLegendData);
+
+                    // Using CSS, to set legend height, width, letter and number
+                    var header1 = d3.select("#barChartLegend")
+                                .attr("width", 200)
+                                .attr("height", 50)				  					
+                                .attr("transform", "translate(" + 300 + "," + -180 + ")");
+
+                    header1.append("text").text("Price")
+                          .attr({
+                              x:0,
+                              y:height+45,
+                              class:"profitLabel"
+                          })
+
+                    //add color legend
+                    header1.selectAll(".barChartLegend")                        	
+                        .data(barLegendData)
+                        .enter()
+                        .append("rect")
+                        .attr({
+                            x: function(d, i) {return i * (200/barLegendData.length);},
+                            y: height+margin.top,
+                            width: function(d,i){ return (200/barLegendData.length); },
+                            height: 10,
+                            fill: function(d) { return color(d);},		                           
+                            class: "barChartLegend"
+                        });
+
+
+                        // console.log([barLegendData[0],barLegendData[barLegendData.length-1]]);
+                    
+                    header1.selectAll("text.profitLegend")
+                        .data([barLegendData[0],barLegendData[barLegendData.length-1]])
+                        .enter()
+                        .append("text")
+                        .text(function(d){ return formatSales(d);})
+                        .attr({
+                            x: function(d,i){ return (200-(margin.left/2))*i;},
+                            y: height+15,		         
+                            "font-size":"12px",
+                            "font-family":"sans-serif",
+                            class: "profitLegend"
+
+                        });
+            }
+            d3.csv("2019All.csv", function(error, data) {
+
+            //problems?
+            if(error) {
+                console.log(error);
+            }  else {
+
+                //build something
+                buildLegend(data);
+                buildBar1(data);                    
+            }
+            
+
+            });    
+
+        function buildLine(ds) {
+
+            // To set line graph location
+            var margin = {top: 20, right: 30, bottom: 30, left: 40},
+                w = 400 - margin.left - margin.right,
+                h = 150 - margin.top - margin.bottom;
+
+
+            //scales
+            var xScale = d3.scale.linear()
+                        .domain([
+                                    d3.min(ds.YearPrice, function(d){ return d.Date;}) ,
+                                    d3.max(ds.YearPrice, function(d){ return d.Date;})
+                                ])                
+                        .range([0, w])
+                        .nice();        
+
+
+            var yScale = d3.scale.linear()
+                        .domain([0, d3.max(ds.YearPrice, function(d){ return d.Price;})])
+                        .range([h,0])
+                        .nice();
+
+            // to set how is line be
+            var lineFun = d3.svg.line()
+                .x(function (d) {return xScale(d.Date); } )
+                .y(function (d) {return yScale(d.Price); })
+                .interpolate("linear");
+                
+            // Using CSS, to assign soem styles    
+            var svg = d3.select("#bottomLeft").append("svg").attr({ width:w, height:h});
+
+            var viz = svg.append("path")
+                        .attr({
+                            d: lineFun(ds.YearPrice),
+                            "stroke" : "#666666",
+                            "stroke-width": 2,
+                            "fill" : "none"
+                        });
+
+
+            }
+
+            //show header
+            function showHeader(ds) {
+            d3.select("#bottomLeft").append("h4")
+                .text(ds.category);
+            }
+
+
+            //get data and draw things  
+            d3.json("2019.json", function(error, data) {
+
+            if(error) {
+            console.log(error);               
+            } 
+
+            data.contents.forEach(function(ds){                               
+                showHeader(ds);
+                buildLine(ds);                    
+            })
+
+            });
+</script>           
+
+<script>
+    d3.json("tree2019.json",function(error,data){
+        root = data[0];
+        update(root);
+
+    });
+
+    function update(source) {
+        var margin = {top:-80, right:120,bottom:-10,left:110},
+        width = 960 - margin.left-margin.right,
+        height = 1100-margin.top-margin.bottom
+
+        var i = 0;
+
+        var tree = d3.layout.tree()
+            .size([height,width]);
+
+        var diagonal = d3.svg.diagonal()
+            .projection(function(d){return [d.y,d.x];});
+
+        var svg = d3.select("body").append("svg")
+                .attr("width", width + margin.right + margin.left)
+                .attr("height", height + margin.top + margin.bottom)
+                .append("g")
+                .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+        var barTooltip = d3.select("body").append("div")   
+            .attr("class", "tooltip2")               
+            .style("opacity", 0);
+        // Compute the new tree layout.
+        var nodes = tree.nodes(root).reverse(),
+            links = tree.links(nodes);
+
+        // Normalize for fixed-depth.
+        nodes.forEach(function(d) { d.y = d.depth * 180; });
+
+        // Declare the nodes…
+        var node = svg.selectAll("g.node")
+            .data(nodes, function(d) { return d.id || (d.id = ++i); });
+
+        // Enter the nodes.
+        var nodeEnter = node.enter().append("g")
+            .attr("class", "node")
+            .attr("transform", function(d) { 
+                return "translate(" + d.y + "," + d.x + ")"; })
+           
+
+        nodeEnter.append("circle")
+            .attr("r", 10)
+            .style("fill", "#fff")
+            .on("mouseover", function(d) {      
+                        barTooltip.transition()        
+                            .duration(500)      
+                            .style("opacity", .9);      
+
+                        var tip = "<strong>Price:</strong> $" + (d.value) + "<br/>";
+                        barTooltip.html(tip)  
+                            .style("left", (d3.event.pageX) + "px")     
+                            .style("top", (d3.event.pageY - 28) + "px");    
+                        })                  
+                        .on("mouseout", function(d) {       
+
+                        barTooltip.transition()        
+                            .duration(500)      
+                            .style("opacity", 0);   
+                        });
+
+        nodeEnter.append("text")
+            .attr("x", function(d) { 
+                return d.children || d._children ? -15 : 15; })
+            .attr("dy", ".35em")
+            .attr("text-anchor", function(d) { 
+                return d.children || d._children ? "end" : "start"; })
+            .text(function(d) { return d.name; })
+            /* .text(function(d) { return d.value}) */
+            .style("fill-opacity", 1)
+            
+                            
+
+        // Declare the links…
+        var link = svg.selectAll("path.link")
+            .data(links, function(d) { return d.target.id; });
+
+        // Enter the links.
+        link.enter().insert("path", "g")
+            .attr("class", "link")
+            .attr("d", diagonal);
+
+        }
+
+
+
+</script>
+
+
+<script>
+
+            function buildBar2(ds){
+                var barTooltip2 = d3.select("body").append("div")   
+                .attr("class", "tooltip")               
+                .style("opacity", 0);
+
+            var margin = {top: 10, right: 30, bottom: 30, left: 40},
+                width = 800 - margin.left - margin.right,
+                height = 200 - margin.bottom;
+
+            var x = d3.scale.ordinal()
+                .rangeRoundBands([0, width], .1);
+
+            var y = d3.scale.linear()
+                .range([height, 0]);
+
+            var xAxis = d3.svg.axis()
+                .scale(x)
+                .orient("bottom");
+
+            var yAxis = d3.svg.axis()
+                .scale(y)
+                .orient("left")
+                .tickFormat(d3.format("s"))
+                .ticks(6);
+
+            console.log(minPrice2)
+
+            var color = d3.scale.quantize()
+                        .domain([minPrice2, maxPrice2])							
+                        .range(['rgb(202,0,32)','rgb(244,165,130)','rgb(186,186,186)','rgb(64,64,64)']);          
+
+            var chart = d3.select("#barChart2")
+                .attr("width", width + margin.left + margin.right)
+                .attr("height", height + margin.top + margin.bottom)
+            .append("g")
+                .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+            d3.csv("2020All.csv", function(error, data) {
+            x.domain(data.map(function(d) { return d.Date; }));
+            y.domain([0, 55739.160]);
+
+            chart.append("g")
+                .attr("class", "x-axis")
+                .attr("transform", "translate(0," + height + ")")
+                .call(xAxis);
+
+            chart.append("g")
+                .attr("class", "y-axis")
+                .call(yAxis);
+
+            chart.selectAll("#barChart2")
+                .data(data)
+                .enter().append("rect")
+                .attr("class", "bar")
+                .attr("x", function(d) { return x(d.Date); })
+                .attr("y", function(d) { return y(d.Price); })
+                .attr("height", function(d) { return height - y(d.Price); })
+                .attr("width", x.rangeBand())
+                .style("fill", function(d) { return color(d.Price); })
+                .on("mouseover", function(d) {      
+
+                        barTooltip2.transition()        
+                            .duration(500)      
+                            .style("opacity", .9);      
+
+                        var tip = "<strong>Price:</strong> $" + formatSales(d.Price) + "<br/>";
+                        barTooltip2.html(tip)  
+                            .style("left", (d3.event.pageX) + "px")     
+                            .style("top", (d3.event.pageY - 28) + "px");    
+                    })                  
+                    .on("mouseout", function(d) {       
+
+                        barTooltip2.transition()        
+                            .duration(500)      
+                            .style("opacity", 0);   
+                    });
+
+
+            });
+            }       
+
+            function buildLegend2(data){
+                var margin = {top: 20, right: 30, bottom: 30, left: 40},
+                        width = 800 - margin.left - margin.right,
+                        height = 290 - margin.top - margin.bottom;
+
+                    var color = d3.scale.quantize()
+                                .domain([minPrice2, maxPrice2])							
+                                .range(['rgb(202,0,32)','rgb(244,165,130)','rgb(186,186,186)','rgb(64,64,64)']);
+
+                    //sort values for color legend
+
+                    var barLegendData2=[];
+
+                    data.forEach(function(dv){
+
+                        var val = parseFloat(dv.Price)
+                        if (val) {barLegendData2.push(val);}
+
+                    });
+
+                    barLegendData2.sort(function(a,b){ return a-b;});
+
+                    console.log(barLegendData2);
+
+                    var header2 = d3.select("#barChartLegend2")
+                                .attr("width", 200)
+                                .attr("height", 50)				  					
+                                .attr("transform", "translate(" + 300 + "," + -180 + ")");
+
+                    header2.append("text").text("Price")
+                          .attr({
+                              x:0,
+                              y:height+45,
+                              class:"profitLabel"
+                          })
+
+                    //add color legend
+                    header2.selectAll(".barChartLegend2")                        	
+                        .data(barLegendData2)
+                        .enter()
+                        .append("rect")
+                        .attr({
+                            x: function(d, i) {return i * (200/barLegendData2.length);},
+                            y: height+margin.top,
+                            width: function(d,i){ return (200/barLegendData2.length); },
+                            height: 10,
+                            fill: function(d) { return color(d);},		                           
+                            class: "barChartLegend2"
+                        });
+
+
+                        // console.log([barLegendData[0],barLegendData[barLegendData.length-1]]);
+
+                    header2.selectAll("text.profitLegend2")
+                        .data([barLegendData2[0],barLegendData2[barLegendData2.length-1]])
+                        .enter()
+                        .append("text")
+                        .text(function(d){ return formatSales(d);})
+                        .attr({
+                            x: function(d,i){ return (200-(margin.left/2))*i;},
+                            y: height+15,		         
+                            "font-size":"12px",
+                            "font-family":"sans-serif",
+
+                        });
+            
+            }
+
+
+            d3.csv("2020All.csv", function(error, data) {
+
+            //problems?
+            if(error) {
+                console.log(error);
+            }  else {
+
+                //build something
+                buildLegend2(data);
+                buildBar2(data);                    
+            }
+
+        });
+
+            function buildLine2(ds){
+                var margin = {top: 20, right: 30, bottom: 30, left: 40},
+                w = 400 - margin.left - margin.right,
+                h = 150 - margin.top - margin.bottom;
+
+
+            //scales
+            var xScale = d3.scale.linear()
+                        .domain([
+                                    d3.min(ds.YearPrice, function(d){ return d.Date;}) ,
+                                    d3.max(ds.YearPrice, function(d){ return d.Date;})
+                                ])                
+                        .range([0, w])
+                        .nice();        
+
+
+            var yScale = d3.scale.linear()
+                        .domain([0, d3.max(ds.YearPrice, function(d){ return d.Price;})])
+                        .range([h,0])
+                        .nice();
+
+            var lineFun = d3.svg.line()
+                .x(function (d) {return xScale(d.Date); } )
+                .y(function (d) {return yScale(d.Price); })
+                .interpolate("linear");
+                
+                
+            var svg = d3.select("#bottomLeft2").append("svg").attr({ width:w, height:h});
+
+            var viz = svg.append("path")
+                        .attr({
+                            d: lineFun(ds.YearPrice),
+                            "stroke" : "#666666",
+                            "stroke-width": 2,
+                            "fill" : "none"
+                        });
+
+
+            }
+
+            //show header
+            function showHeader2(ds) {
+            d3.select("#bottomLeft2").append("h4")
+                .text(ds.category);
+            }
+
+
+            //get data and draw things  
+            d3.json("2020.json", function(error, data) {
+
+            if(error) {
+            console.log(error);               
+            } 
+
+            data.contents.forEach(function(ds){                               
+                showHeader2(ds);
+                buildLine2(ds);                    
+            })
+
+            });          
+            
+    </script>
+
+<script>
+    d3.json("tree2020.json",function(error,data){
+        root = data[0];
+        update2(root);
+
+    });
+
+    function update2(source) {
+        var margin = {top:800, right:120,bottom:10,left:270},
+        width = 860 - margin.right-margin.left,
+        height = 1940-margin.top-margin.bottom
+
+        var i = 0;
+
+        var tree = d3.layout.tree()
+            .size([height,width]);
+
+        var diagonal = d3.svg.diagonal()
+            .projection(function(d){return [d.y,d.x];});
+
+        var svg = d3.select("#treeChart2")
+                .attr("width", width + margin.right + margin.left)
+                .attr("height", height + margin.top + margin.bottom)
+                .append("g")
+                .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+                
+
+        var barTooltip = d3.select("body").append("div")   
+            .attr("class", "tooltip2")               
+            .style("opacity", 0);
+        // Compute the new tree layout.
+        var nodes = tree.nodes(root).reverse(),
+            links = tree.links(nodes);
+
+        // Normalize for fixed-depth.
+        nodes.forEach(function(d) { d.y = d.depth * 180; });
+
+        // Declare the nodes…
+        var node = svg.selectAll("g.node")
+            .data(nodes, function(d) { return d.id || (d.id = ++i); });
+
+        // Enter the nodes.
+        var nodeEnter = node.enter().append("g")
+            .attr("class", "node")
+            .attr("transform", function(d) { 
+                return "translate(" + d.y + "," + d.x + ")"; })
+           
+
+        nodeEnter.append("circle")
+            .attr("r", 10)
+            .style("fill", "#fff")
+            .on("mouseover", function(d) {      
+                        barTooltip.transition()        
+                            .duration(500)      
+                            .style("opacity", .9);      
+
+                        var tip = "<strong>Price:</strong> $" + (d.value) + "<br/>";
+                        barTooltip.html(tip)  
+                            .style("left", (d3.event.pageX) + "px")     
+                            .style("top", (d3.event.pageY - 28) + "px");    
+                        })                  
+                        .on("mouseout", function(d) {       
+
+                        barTooltip.transition()        
+                            .duration(500)      
+                            .style("opacity", 0);   
+                        });
+
+        nodeEnter.append("text")
+            .attr("x", function(d) { 
+                return d.children || d._children ? -15 : 15; })
+            .attr("dy", ".35em")
+            .attr("text-anchor", function(d) { 
+                return d.children || d._children ? "end" : "start"; })
+            .text(function(d) { return d.name; })
+            /* .text(function(d) { return d.value}) */
+            .style("fill-opacity", 1)
+            
+                            
+
+        // Declare the links…
+        var link = svg.selectAll("path.link")
+            .data(links, function(d) { return d.target.id; });
+
+        // Enter the links.
+        link.enter().insert("path", "g")
+            .attr("class", "link")
+            .attr("d", diagonal);
+
+        }
+
+
+
+</script>
+    
+    
+    
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+</body>
+</html>
